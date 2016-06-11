@@ -1,6 +1,7 @@
 Revision history for Dist-Surveyor
 
 {{$NEXT}}
+	- Sort generated 02packages case insensitively (miyagawa)
 
 0.014     2016-06-11 17:48:44-04:00 America/New_York
 	- Corrected prereqs
@@ -46,5 +47,5 @@ Revision history for Dist-Surveyor
 	- clarifing warning wording about modules that are laready core in Perl
 
 0.001     2011-11-17 13:00:29 Europe/Dublin
-    - Initial release
+	- Initial release
 
