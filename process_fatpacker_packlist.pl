@@ -17,7 +17,7 @@ my @ignored_package = qw{
     };
 
 my %handled_packages = (
-    map( { $_ => \&pass } qw{ Module/Metadata CPAN/DistnameInfo } ),
+    map( { $_ => \&pass } qw{ JSON/Tiny Module/Metadata CPAN/DistnameInfo } ),
     version => \&version,
 );
 
