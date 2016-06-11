@@ -1,6 +1,7 @@
 Revision history for Dist-Surveyor
 
 {{$NEXT}}
+	- Corrected prereqs
 	- Various fixes to distribution packaging
 
 0.013     2013-07-09 16:19:07 Asia/Tokyo
