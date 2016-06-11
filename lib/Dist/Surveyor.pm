@@ -607,7 +607,7 @@ and create a mini-cpan containing them.
 
 Written by Tim Bunce E<lt>Tim.Bunce@pobox.comE<gt> 
 
-Maintained by Fomberg Shmuel, E<lt>shmuelfomberg@gmail.comE<gt>
+Maintained by Fomberg Shmuel E<lt>shmuelfomberg@gmail.comE<gt>, Dan Book E<lt>dbook@cpan.orgE<gt>
  
 =head1 COPYRIGHT AND LICENSE
  
