@@ -7,7 +7,7 @@ use FindBin;
 use Fcntl qw(:DEFAULT :flock); # core
 use Dist::Surveyor::DB_File; # internal
 use HTTP::Tiny;
-use JSON::Tiny qw(decode_json encode_json);
+use JSON::MaybeXS qw(JSON decode_json);
 use Scalar::Util qw(looks_like_number); # core
 use Data::Dumper;
 use version;
@@ -202,7 +202,7 @@ sub get_candidate_cpan_dist_releases {
     my $response = $ua->post(
         'http://api.metacpan.org/v0/file', {
             headers => { 'Content-Type' => 'application/json;charset=UTF-8' },
-            content => encode_json($query),
+            content => JSON->new->utf8->canonical->encode($query),
         }
     );
     die "$response->{status} $response->{reason}" unless $response->{success};
@@ -248,7 +248,7 @@ sub get_candidate_cpan_dist_releases_fallback {
     my $response = $ua->post(
         'http://api.metacpan.org/v0/file', {
             headers => { 'Content-Type' => 'application/json;charset=UTF-8' },
-            content => encode_json($query),
+            content => JSON->new->utf8->canonical->encode($query),
         }
     );
     die "$response->{status} $response->{reason}" unless $response->{success};
@@ -352,7 +352,7 @@ sub get_module_versions_in_release {
         my $response = $ua->post(
             'http://api.metacpan.org/v0/file', {
                 headers => { 'Content-Type' => 'application/json;charset=UTF-8' },
-                content => encode_json($query),
+                content => JSON->new->utf8->canonical->encode($query),
             }
         );
         die "$response->{status} $response->{reason}" unless $response->{success};
