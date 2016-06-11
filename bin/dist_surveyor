@@ -6,7 +6,7 @@ dist_surveyor - determine exactly what dist versions are installed
 
 =head1 VERSION
 
-version 0.010
+version 0.015
 
 =head1 SYNOPSIS
 
@@ -37,6 +37,15 @@ metacpan is cached so future runs are much faster.  (The system this code was
 tested on took about 60 minutes to process around 500 distributions with no
 cached data, and under 10 minutes for later runs that could reuse the cached
 data. The cache file ended up about 40MB in size.)
+
+=head1 Fatpacked script
+
+A fatpacked version of this script exists in:
+L<https://raw.github.com/semuel/Dist-Surveyor/master/dist_surveyor_packed.pl>
+
+Please note that the packed version expect that the following modules already
+installed on the local system: L<Data::Dumper>, L<Carp> and L<LWP>. Also,
+if you are planing to --makecpan, you also need L<Compress::Zlib>
 
 =head1 OPTIONS
 
@@ -159,6 +168,7 @@ $| = 1;
 
 use Dist::Surveyor;
 use Dist::Surveyor::Inquiry; # internal
+use Dist::Surveyor::MakeCpan;
 
 use constant PROGNAME => 'dist_surveyor';
 
@@ -231,7 +241,6 @@ sub main {
 
 
     if ($opt_makecpan) {
-        require Dist::Surveyor::MakeCpan;
         my $cpan = Dist::Surveyor::MakeCpan->new(
             $opt_makecpan, PROGNAME, $distro_key_mod_names);
 

@@ -1,7 +1,5 @@
 package Dist::Surveyor::MakeCpan;
-{
-  $Dist::Surveyor::MakeCpan::VERSION = '0.010';
-}
+$Dist::Surveyor::MakeCpan::VERSION = '0.015';
 use strict;
 use warnings;
 use Carp; # core
@@ -9,7 +7,7 @@ use Data::Dumper; # core
 use File::Path; # core
 use CPAN::DistnameInfo;
 use File::Basename qw{dirname};  # core
-use LWP::Simple qw{is_error};
+use LWP::Simple qw{is_error mirror};
 use LWP::UserAgent;
 use Dist::Surveyor::Inquiry;
 use List::Util qw(max); # core
@@ -205,15 +203,6 @@ sub add_release {
 
 }
 
-# download the file in $url, into $destfile. 
-# returns requrest status code
-sub mirror {
-    my ($url, $destfile) = @_;
-    my $ua = LWP::UserAgent->new( agent => $0, timeout => 10 );
-    my $response = $ua->get($url, ':content_file' => $destfile);
-    return $response->code();
-}
-
 sub p_r_match_score {
     my ($pkg_name, $ri) = @_;
     my @p = split /\W/, $pkg_name;
@@ -313,7 +302,7 @@ Dist::Surveyor::MakeCpan - Create a Mini-CPAN for the surveyed modules
 
 =head1 VERSION
 
-version 0.010
+version 0.015
 
 =head1 SYNOPSIS
 

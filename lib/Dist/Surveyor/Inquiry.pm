@@ -1,7 +1,5 @@
 package Dist::Surveyor::Inquiry;
-{
-  $Dist::Surveyor::Inquiry::VERSION = '0.010';
-}
+$Dist::Surveyor::Inquiry::VERSION = '0.015';
 use strict;
 use warnings;
 use Memoize; # core
@@ -12,6 +10,7 @@ use LWP::UserAgent;
 use JSON;
 use Scalar::Util qw(looks_like_number); # core
 use Data::Dumper;
+use version;
 
 =head1 NAME
 
@@ -19,7 +18,7 @@ Dist::Surveyor::Inquiry - Handling the meta-cpan API access for Dist::Surveyor
 
 =head1 VERSION
 
-version 0.010
+version 0.015
 
 =head1 DESCRIPTION
 
@@ -47,8 +46,6 @@ For initating cache-on-disk, call Dist::Surveyor::Inquiry->perma_cache()
 
 =back
 
-=head1 FUNCTIONS
-
 =cut
 
 # We have to limit the number of results when using MetaCPAN::API.
@@ -63,7 +60,11 @@ our ($DEBUG, $VERBOSE);
 *DEBUG = \$::DEBUG;
 *VERBOSE = \$::VERBOSE;
 
-my $ua = LWP::UserAgent->new( agent => $0, timeout => 10 );
+my $ua = LWP::UserAgent->new( 
+    agent => $0, 
+    timeout => 10,
+    keep_alive => 3, 
+);
 
 require Exporter;
 our @ISA = qw{Exporter};
@@ -78,6 +79,16 @@ our @EXPORT = qw{
 
 my %memoize_cache;
 my $locking_file;
+
+=head1 CLASS METHODS
+
+=head2 Dist::Surveyor::Inquiry->perma_cache()
+
+Enable caching to disk of all the MetaCPAN API requests.
+This cache can grew to be quite big - 40MB is one case, but it worth it,
+as if you will need to run this program again, it will run much faster.
+
+=cut
 
 sub perma_cache {
     my $class = shift;
@@ -106,6 +117,8 @@ for my $subname (@memoize_subs) {
     );
     memoize($subname, %memoize_args);
 }
+
+=head1 FUNCTIONS
 
 =head2 get_release_info($author, $release)
 

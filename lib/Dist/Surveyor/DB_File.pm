@@ -1,7 +1,5 @@
 package Dist::Surveyor::DB_File;
-{
-  $Dist::Surveyor::DB_File::VERSION = '0.010';
-}
+$Dist::Surveyor::DB_File::VERSION = '0.015';
 use strict;
 use warnings;
 use Storable qw(freeze thaw);
