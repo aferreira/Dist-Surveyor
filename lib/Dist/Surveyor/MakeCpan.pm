@@ -1,4 +1,5 @@
 package Dist::Surveyor::MakeCpan;
+
 use strict;
 use warnings;
 use Carp; # core

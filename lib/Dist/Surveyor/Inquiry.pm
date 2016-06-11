@@ -1,4 +1,5 @@
 package Dist::Surveyor::Inquiry;
+
 use strict;
 use warnings;
 use Memoize; # core
