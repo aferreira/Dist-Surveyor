@@ -2,6 +2,8 @@ Revision history for Dist-Surveyor
 
 {{$NEXT}}
 	- Sort generated 02packages case insensitively (miyagawa)
+	- Use HTTP::Tiny instead of LWP::UserAgent
+	- Use JSON::Tiny instead of JSON for better fatpacking
 
 0.014     2016-06-11 17:48:44-04:00 America/New_York
 	- Corrected prereqs

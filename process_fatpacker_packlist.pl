@@ -8,8 +8,6 @@ use File::Spec;
 my @ignored_package = qw{ 
     Data/Dumper 
     Carp 
-    JSON/XS 
-    LWP 
     Encode/Locale 
     HTTP/Date 
     HTTP/Message 
@@ -19,7 +17,7 @@ my @ignored_package = qw{
     };
 
 my %handled_packages = (
-    map( { $_ => \&pass } qw{ JSON JSON/PP Module/Metadata CPAN/DistnameInfo } ),
+    map( { $_ => \&pass } qw{ Module/Metadata CPAN/DistnameInfo } ),
     version => \&version,
 );
 
