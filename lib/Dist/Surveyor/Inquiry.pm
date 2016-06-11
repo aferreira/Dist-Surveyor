@@ -6,7 +6,7 @@ use Memoize; # core
 use FindBin;
 use Fcntl qw(:DEFAULT :flock); # core
 use Dist::Surveyor::DB_File; # internal
-use LWP::UserAgent;
+use HTTP::Tiny;
 use JSON;
 use Scalar::Util qw(looks_like_number); # core
 use Data::Dumper;
@@ -56,10 +56,10 @@ our ($DEBUG, $VERBOSE);
 *DEBUG = \$::DEBUG;
 *VERBOSE = \$::VERBOSE;
 
-my $ua = LWP::UserAgent->new( 
-    agent => $0, 
+my $ua = HTTP::Tiny->new(
+    agent => $0,
     timeout => 10,
-    keep_alive => 3, 
+    keep_alive => 1, 
 );
 
 require Exporter;
@@ -134,8 +134,8 @@ sub get_release_info {
     my ($author, $release) = @_;
     $metacpan_calls++;
     my $response = $ua->get("http://api.metacpan.org/v0/release/$author/$release");
-    die $response->status_line unless $response->is_success;
-    my $release_data = decode_json $response->decoded_content;
+    die "$response->{status} $response->{reason}" unless $response->{success};
+    my $release_data = decode_json $response->{content};
     if (!$release_data) {
         warn "Can't find release details for $author/$release - SKIPPED!\n";
         return; # XXX could fake some of $release_data instead
@@ -200,11 +200,12 @@ sub get_candidate_cpan_dist_releases {
     };
 
     my $response = $ua->post(
-        'http://api.metacpan.org/v0/file',
-        Content_Type => 'application/json',
-        Content => to_json( $query, { canonical => 1 } ),
+        'http://api.metacpan.org/v0/file', {
+            headers => { 'Content-Type' => 'application/json' },
+            content => to_json( $query, { canonical => 1 } ),
+        }
     );
-    die $response->status_line unless $response->is_success;
+    die "$response->{status} $response->{reason}" unless $response->{success};
     return _process_response($funcstr, $response);
 }
 
@@ -245,11 +246,12 @@ sub get_candidate_cpan_dist_releases_fallback {
             file.module.version_numified date stat.mtime distribution file.path)]
     };
     my $response = $ua->post(
-        'http://api.metacpan.org/v0/file',
-        Content_Type => 'application/json',
-        Content => to_json( $query, { canonical => 1 } ),
+        'http://api.metacpan.org/v0/file', {
+            headers => { 'Content-Type' => 'application/json' },
+            content => to_json( $query, { canonical => 1 } ),
+        }
     );
-    die $response->status_line unless $response->is_success;
+    die "$response->{status} $response->{reason}" unless $response->{success};
     return _process_response("get_candidate_cpan_dist_releases_fallback($module, $version)", $response);
 }
 
@@ -280,7 +282,7 @@ sub _prepare_version_query {
 sub _process_response {
     my ($funcname, $response) = @_;
 
-    my $results = decode_json $response->decoded_content;
+    my $results = decode_json $response->{content};
 
     my $hits = $results->{hits}{hits};
     die "$funcname: too many results (>$metacpan_size)"
@@ -348,12 +350,13 @@ sub get_module_versions_in_release {
             "fields" => ["path","name","_source.module", "_source.stat.size"],
         }; 
         my $response = $ua->post(
-            'http://api.metacpan.org/v0/file',
-            Content_Type => 'application/json',
-            Content => to_json( $query, { canonical => 1 } ),
+            'http://api.metacpan.org/v0/file', {
+                headers => { 'Content-Type' => 'application/json' },
+                content => to_json( $query, { canonical => 1 } ),
+            }
         );
-        die $response->status_line unless $response->is_success;
-        decode_json $response->decoded_content;
+        die "$response->{status} $response->{reason}" unless $response->{success};
+        decode_json $response->{content};
     };
     if (not $results) {
         warn "Failed get_module_versions_in_release for $author/$release: $@";

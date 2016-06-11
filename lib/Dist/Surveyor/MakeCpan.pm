@@ -7,8 +7,7 @@ use Data::Dumper; # core
 use File::Path; # core
 use CPAN::DistnameInfo;
 use File::Basename qw{dirname};  # core
-use LWP::Simple qw{is_error mirror};
-use LWP::UserAgent;
+use HTTP::Tiny;
 use Dist::Surveyor::Inquiry;
 use List::Util qw(max); # core
 
@@ -137,12 +136,13 @@ sub add_release {
     }
 
     my $mirror_status;
+    my $ua = HTTP::Tiny->new;
     for my $url (@urls) {
-        $mirror_status = eval { mirror($url, $destfile) };
-        last if not is_error($mirror_status||500);
+        $mirror_status = $ua->mirror($url, $destfile);
+        last if $mirror_status->{success};
     }
-    if ($@ || is_error($mirror_status)) {
-        my $err = ($@ and chomp $@) ? $@ : $mirror_status;
+    if (!$mirror_status->{success}) {
+        my $err = $mirror_status->{status} == 599 ? $mirror_status->{content} : $mirror_status->{status};
         my $msg = "Error $err mirroring $main_url";
         if (-f $destfile) {
             warn "$msg - using existing file\n";
@@ -156,7 +156,7 @@ sub add_release {
         }
     }
     else {
-        warn "$mirror_status $main_url\n" if $verbose;
+        warn "$mirror_status->{status} $main_url\n" if $verbose;
     }
 
 
