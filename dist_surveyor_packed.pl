@@ -26847,11 +26847,12 @@ data. The cache file ended up about 40MB in size.)
 =head1 Fatpacked script
 
 A fatpacked version of this script exists in:
-L<https://raw.github.com/semuel/Dist-Surveyor/master/dist_surveyor_packed.pl>
+L<https://raw.github.com/Grinnz/Dist-Surveyor/master/dist_surveyor_packed.pl>
 
-Please note that the packed version expect that the following modules already
-installed on the local system: L<Data::Dumper>, L<Carp> and L<LWP>. Also,
-if you are planing to --makecpan, you also need L<Compress::Zlib>
+Please note that the packed version expects that the modules L<Carp>,
+L<Data::Dumper>, L<List::Util>, L<Scalar::Util>, and L<Storable> are already
+installed on the local system. If you are planing to --makecpan, you also need
+L<Compress::Zlib>.
 
 =head1 OPTIONS
 
