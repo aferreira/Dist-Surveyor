@@ -1,6 +1,8 @@
 Revision history for Dist-Surveyor
 
 {{$NEXT}}
+
+0.015     2016-06-11 21:51:03-04:00 America/New_York
 	- Sort generated 02packages case insensitively (miyagawa)
 	- Use HTTP::Tiny instead of LWP::UserAgent
 	- Use JSON::MaybeXS instead of JSON
