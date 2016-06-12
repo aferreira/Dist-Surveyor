@@ -33,7 +33,7 @@ my @output;
 
 while (my $line = <$fh>) {
     chomp $line;
-    my ($module) = $line =~ m!/auto/(\w+(?:/\w+)?)/\.packlist$!;
+    my ($module) = $line =~ m!/auto/([\w/]+)/\.packlist$!;
     warn "Could not process line |$line|"
         unless $module;
     next if grep { $_ eq $module } @ignored_package;
