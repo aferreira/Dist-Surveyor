@@ -23,8 +23,8 @@ my @ignored_package = qw{
     };
 
 my %handled_packages = (
-    map( { $_ => \&pass } qw{ HTTP/Tiny JSON/MaybeXS JSON/PP Memoize Module/CoreList Module/Metadata CPAN/DistnameInfo } ),
-    version => \&version,
+    map( { $_ => \&pass } qw{ HTTP/Tiny JSON/MaybeXS JSON/PP Memoize Module/CoreList Module/Metadata CPAN/DistnameInfo version } ),
+    #version => \&version,
 );
 
 my $filename = shift @ARGV;
