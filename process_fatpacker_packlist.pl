@@ -6,26 +6,32 @@ use FindBin;
 use File::Spec;
 
 my @ignored_package = qw{ 
-    Data/Dumper 
-    Carp 
     Canary/Stability
+    Carp 
     common/sense
     Cpanel/JSON/XS 
+    Cwd
+    Data/Dumper 
     Encode/Locale 
     HTTP/Date 
     HTTP/Message 
     JSON/XS 
-    URI 
-    Cwd
     List/Util
     Storable
     Types/Serialiser
+    URI 
     };
 
-my %handled_packages = (
-    map( { $_ => \&pass } qw{ HTTP/Tiny JSON/MaybeXS JSON/PP Memoize Module/CoreList Module/Metadata CPAN/DistnameInfo version } ),
-    #version => \&version,
-);
+my %handled_packages = map { ($_ => 1) } qw{
+    HTTP/Tiny
+    JSON/MaybeXS
+    JSON/PP
+    Memoize
+    Module/CoreList
+    Module/Metadata
+    CPAN/DistnameInfo
+    version
+    };
 
 my $filename = shift @ARGV;
 open my $fh, "<", $filename or die "can not open $filename";
@@ -37,11 +43,9 @@ while (my $line = <$fh>) {
     warn "Could not process line |$line|"
         unless $module;
     next if grep { $_ eq $module } @ignored_package;
-    my $handler = delete $handled_packages{$module}
-        or die "I do not know what to do with the |$module| module";
-    $line = $handler->($line);
+    die "I do not know what to do with the |$module| module"
+        unless delete $handled_packages{$module};
     push @output, $line;
-
 }
 close $fh;
 
@@ -52,27 +56,3 @@ if (%handled_packages) {
 open  $fh, ">", $filename or die "can not open $filename to write";
 print $fh join("\n", @output), "\n";
 close $fh;
-
-sub pass {
-    my $line = shift;
-    return $line;
-}
-
-sub version {
-    my $line = shift;
-    open my $in, "<", $line or die "can not open packlist for version";
-    return $line if grep m!/version/vpp\.pm!, <$in>;
-    close $in;
-    warn "You have the XS of version installed - replacing with stored PP version";
-    open my $orig, "<", File::Spec->catfile($FindBin::Bin, qw{ extlib arch auto version .packlist-orig })
-        or die "can not open .packlist-orig";
-    open my $dest, ">", File::Spec->catfile($FindBin::Bin, qw{ extlib arch auto version .packlist })
-        or die "can not open .packlist";
-    while (my $path = <$orig>) {
-        chomp $path;
-        print $dest File::Spec->catdir($FindBin::Bin, $path), "\n";
-    }
-    close $orig;
-    close $dest;
-    return File::Spec->catfile($FindBin::Bin, qw{ extlib arch auto version .packlist });
-}

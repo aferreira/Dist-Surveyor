@@ -10,4 +10,3 @@ t/testcpan
 fatlib
 fatpacker.packlists
 fatpacker.trace
-extlib/arch/auto/version/.packlist
