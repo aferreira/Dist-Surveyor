@@ -1,6 +1,7 @@
 Revision history for Dist-Surveyor
 
 {{$NEXT}}
+	- Use Test::RequiresInternet in test files
 
 0.015     2016-06-11 21:51:03-04:00 America/New_York
 	- Sort generated 02packages case insensitively (miyagawa)

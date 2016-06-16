@@ -3,6 +3,7 @@ use warnings;
 use Dist::Surveyor::Inquiry;
 use Data::Dumper;
 use Test::More;
+use Test::RequiresInternet 'api.metacpan.org' => 80;
 
 my $module_data = get_module_versions_in_release('SEMUELF', 'Dist-Surveyor-0.009');
 my $expected =  {
